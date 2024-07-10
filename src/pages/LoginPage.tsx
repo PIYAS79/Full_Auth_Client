@@ -1,5 +1,10 @@
 import { FormEvent, useState } from "react";
 import { useLoginUser_ApiMutation } from "../redux/api/authApi"
+import { Decode_JWT_Token } from "../utils/decodeJwtToken";
+import { Login_User } from "../redux/features/authSlice";
+import { useAppDispatch } from "../redux/hook";
+import { useNavigate } from "react-router-dom";
+import {toast} from 'sonner'
 
 
 const LoginPage = () => {
@@ -7,14 +12,19 @@ const LoginPage = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loginFnc, { data }] = useLoginUser_ApiMutation();
+  const dispatch = useAppDispatch();
+  const navitate = useNavigate()
 
   const handleLoginPage = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
       const res = await loginFnc({ email, password }).unwrap();
-      console.log(res);
-    } catch (err) {
+      const user = Decode_JWT_Token(res.data.AccessToken);
+      dispatch(Login_User({user,token:res.data.AccessToken}));
+      navitate('/');
+    } catch (err:any) {
       console.log(err);
+      toast.error(err.data.errorTitle,{position:'top-center'})
     }
   }
 

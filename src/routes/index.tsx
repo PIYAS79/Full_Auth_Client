@@ -3,6 +3,7 @@ import LoginPage from "../pages/LoginPage";
 import RegistrationPage from "../pages/RegistrationPage";
 import RootPage from "../pages/RootPage";
 import HomePage from "../pages/HomePage";
+import ProtectedRoute from "../private/ProtectedRoute";
 
 
 
@@ -17,7 +18,7 @@ const router = createBrowserRouter([
     },
     {
         path: '/',
-        element: <RootPage />,
+        element: <ProtectedRoute><RootPage /></ProtectedRoute>,
         children: [
             {
                 path: '',
